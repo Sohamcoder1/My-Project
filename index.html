@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Bhai Fota!</title>
+    
+    <!-- 1. Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- 2. Load PeerJS library for WebRTC video calling -->
+    <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+
+    <!-- 3. Load QR Code Generation Library -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcode-generator/qrcode.js"></script>
+    
+    <!-- 4. Load Inter and Laila fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Laila:wght@500;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* 5. Custom styles for the festive theme */
+        body {
+            font-family: 'Inter', sans-serif;
+            /* New Festive background gradient */
+            background: linear-gradient(135deg, #FFF1EB 0%, #FFE4E6 100%);
+        }
+        .font-laila {
+            font-family: 'Laila', sans-serif;
+        }
+        .festive-gradient-text {
+            background: linear-gradient(90deg, #F97316, #DC2626, #C026D3);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: text-shine 3s linear infinite;
+        }
+        .festive-button {
+            background: linear-gradient(90deg, #F97316, #EA580C);
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px 0 rgba(249, 115, 22, 0.4);
+        }
+        .festive-button:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 10px 20px -3px rgba(249, 115, 22, 0.5);
+        }
+        .snapshot-preview {
+            border: 4px dashed #F97316;
+        }
+        .snapshot-preview-img {
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+
+        /* Glassmorphism card effect */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        /* New Gradient Cards */
+        .didi-card-gradient {
+            background: linear-gradient(135deg, #FFF7F3 0%, #FFEEEA 100%);
+            border: 1px solid #FFD6C9;
+        }
+        .bhai-card-gradient {
+            background: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%);
+            border: 1px solid #B9E6FF;
+        }
+
+        /* Text shine animation */
+        @keyframes text-shine {
+            to {
+                background-position: 200% center;
+            }
+        }
+        
+        /* Fun Button Styles for Delivery */
+        .zomato-btn { background-color: #CB202D; box-shadow: 0 4px 14px 0 rgba(203, 32, 45, 0.3); }
+        .zomato-btn:hover { background-color: #E02F3C; }
+        .swiggy-btn { background-color: #F97E25; box-shadow: 0 4px 14px 0 rgba(249, 126, 37, 0.3); }
+        .swiggy-btn:hover { background-color: #FA903E; }
+        .blinkit-btn { background-color: #00AF4D; box-shadow: 0 4px 14px 0 rgba(0, 175, 77, 0.3); }
+        .blinkit-btn:hover { background-color: #00C356; }
+        .zepto-btn { background-color: #6C00BF; box-shadow: 0 4px 14px 0 rgba(108, 0, 191, 0.3); }
+        .zepto-btn:hover { background-color: #8A00F3; }
+        
+        .delivery-btn {
+            transition: all 0.3s ease;
+        }
+        .delivery-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+        }
+        
+        /* NEW: Styles for Floating Action Buttons */
+        .fab-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 9999px; /* circular */
+            box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.2), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        .fab-btn:hover {
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: 0 15px 25px -5px rgba(0, 0, 0, 0.3), 0 8px 10px -6px rgba(0, 0, 0, 0.2);
+        }
+        .shagun-fab-btn {
+            background: linear-gradient(135deg, #a855f7, #7e22ce);
+            color: white;
+        }
+        .petpujo-fab-btn {
+            background: linear-gradient(135deg, #14b8a6, #0d9488);
+            color: white;
+        }
+        
+        /* NEW: Styles for Content Modals */
+        .content-modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            z-index: 40; /* Below alert modal */
+        }
+        .content-modal-box {
+            position: relative;
+            background-color: white;
+            padding: 1.5rem;
+            border-radius: 1rem; /* 16px */
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            max-width: 42rem; /* lg */
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: scale(0.95);
+            opacity: 0;
+            animation: modal-in 0.2s ease-out forwards;
+        }
+        .modal-close-btn {
+            position: absolute;
+            top: 0.75rem;
+            right: 0.75rem;
+            color: #9ca3af; /* gray-400 */
+            background: #f3f4f6; /* gray-100 */
+            border-radius: 9999px;
+            width: 2rem;
+            height: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            line-height: 1;
+            transition: all 0.2s ease;
+        }
+        .modal-close-btn:hover {
+            color: #1f2937; /* gray-800 */
+            background: #e5e7eb; /* gray-200 */
+            transform: rotate(90deg);
+        }
+
+        /* NEW: Styles for Wheel Game */
+        .wheel-label {
+            position: absolute;
+            width: 50%;
+            height: 50%;
+            top: 0; left: 25%;
+            transform-origin: 50% 100%;
+            text-align: center;
+            font-weight: bold;
+            color: white;
+            font-size: 14px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
+            pointer-events: none;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.8;
+                transform: scale(1.1);
+            }
+        }
+
+    </style>
+</head>
+<body class="flex items-center justify-center min-h-screen p-4 md:p-8">
+
+    <div class="w-full max-w-7xl mx-auto">
+        
+        <!-- Header -->
+        <header class="text-center mb-8">
+            <h1 class="font-laila text-5xl md:text-7xl font-bold festive-gradient-text">
+                Happy Bhai Fota!
+            </h1>
+            <p class="text-lg md:text-xl text-gray-700 mt-2">Send your love and blessings virtually.</p>
+        </header>
+
+        <!-- Main content area -->
+        <main>
+            
+            <!-- Role Selection -->
+            <!-- UPDATED: "Aesthetic & Funny" Role Selector -->
+            <div id="role-selection" class="text-center space-y-6 p-4 max-w-2xl mx-auto mb-8">
+                 <h2 class="font-laila text-4xl md:text-5xl font-bold festive-gradient-text">Choose Your Fighter!</h2>
+                 <p class="text-lg text-gray-600">Are you giving the blessing or receiving it?</p>
+                 
+                 <!-- New Grid Layout for selection -->
+                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
+                    
+                    <!-- Didi Card Button -->
+                    <button id="didi-button" class="text-left p-6 bg-white rounded-xl shadow-lg border-2 border-orange-300 hover:border-orange-500 transform transition-all duration-300 hover:scale-105 hover:shadow-2xl focus:outline-none focus:ring-4 focus:ring-orange-500 focus:ring-opacity-50">
+                        <div class="text-5xl mb-3">✨</div>
+                        <h3 class="text-2xl font-laila font-bold text-orange-700">I am Didi</h3>
+                        <p class="font-laila text-lg text-gray-600 mb-2">(The Blessing Giver)</p>
+                        <p class="text-sm text-gray-700">Click here to start the call and get your unique ID to share.</p>
+                    </button>
+                    
+                    <!-- Bhai Card Button -->
+                    <button id="bhai-button" class="text-left p-6 bg-white rounded-xl shadow-lg border-2 border-blue-300 hover:border-blue-500 transform transition-all duration-300 hover:scale-105 hover:shadow-2xl focus:outline-none focus:ring-4 focus:ring-blue-500 focus:ring-opacity-50">
+                        <div class="text-5xl mb-3">🎁</div>
+                        <h3 class="text-2xl font-laila font-bold text-blue-700">I am Bhai</h3>
+                        <p class="font-laila text-lg text-gray-600 mb-2">(The Blessing Receiver)</p>
+                        <p class="text-sm text-gray-700">Click here if you have an ID from your Didi and are ready to join.</p>
+                    </button>
+                 </div>
+            </div>
+
+            <!-- Main Content (2-column layout) - HIDDEN BY DEFAULT -->
+            <!-- UPDATED Layout: 4/12 for controls, 8/12 for video -->
+            <div id="main-content" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-12">
+
+                <!-- Column 1: Call Setup -->
+                <section id="control-column" class="lg:col-span-4 space-y-8">
+
+                    <!-- Didi's UI (Hidden by default) -->
+                    <div id="didi-ui" class="hidden didi-card-gradient p-6 rounded-2xl shadow-xl space-y-4">
+                        <div class="flex items-center space-x-4">
+                            <div class="text-4xl bg-white p-3 rounded-full shadow-inner border border-orange-200">✨</div>
+                            <h2 class="font-laila text-3xl font-bold text-orange-800">Didi's Blessing Portal</h2>
+                        </div>
+                        <p class="text-gray-700">Send this ID to your Bhai so he can join the call.</p>
+                        <div class="bg-white p-4 rounded-lg text-center shadow-inner">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Your Call ID</label>
+                            <span id="my-id" class="text-xl font-bold text-gray-800 bg-orange-50 px-4 py-2 rounded-md border border-gray-300 block w-full truncate">Loading...</span>
+                        </div>
+                        <div class="flex flex-col sm:flex-row gap-3">
+                            <button id="copy-id" class="flex-1 flex items-center justify-center gap-2 bg-blue-600 text-white rounded-lg shadow-md text-sm font-bold py-3 px-4 hover:bg-blue-700 transition-all duration-200 hover:scale-105">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path d="M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z" /><path d="M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z" /></svg>
+                                Copy ID
+                            </button>
+                            <button id="whatsapp-share" class="flex-1 flex items-center justify-center gap-2 bg-green-600 text-white rounded-lg shadow-md text-sm font-bold py-3 px-4 hover:bg-green-700 transition-all duration-200 hover:scale-105">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10c0-3.866-3.582-7-8-7s-8 3.134-8 7c0 1.76.743 3.37 1.97 4.6-.097 1.016-.417 2.13-.799 2.913a.75.75 0 00.98.98c.783-.382 1.897-.702 2.913-.8A7.002 7.002 0 0010 17c4.418 0 8-3.134 8-7zM7 9H5v2h2V9zm8 0h-2v2h2V9zm-4 0H9v2h2V9z" clip-rule="evenodd" /></svg>
+                                Share on WhatsApp
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- ******** ADDED BACK ********* -->
+                    <!-- Bhai's UI (Hidden by default) -->
+                    <div id="bhai-ui" class="hidden bhai-card-gradient p-6 rounded-2xl shadow-xl space-y-4">
+                        <div class="flex items-center space-x-4">
+                            <div class="text-4xl bg-white p-3 rounded-full shadow-inner border border-blue-200">🎁</div>
+                            <h2 class="font-laila text-3xl font-bold text-blue-800">Bhai's Joining Portal</h2>
+                        </div>
+                        <p class="text-gray-700">Enter the ID your Didi sent you to join the call.</p>
+                        <div>
+                            <label for="sibling-id" class="block text-sm font-medium text-gray-700 mb-1">Didi's Call ID</label>
+                            <input type="text" id="sibling-id" placeholder="Enter ID here" class="w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <button id="call-button" class="w-full festive-button text-white text-lg font-bold py-3 px-6 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500">
+                            Call Didi to get blessing
+                        </button>
+
+                        <!-- NEW: Game FAB (Bhai Only) -->
+                        <div class="text-center mt-8">
+                            <button id="open-game-modal" class="fab-btn w-20 h-20 rounded-full" style="background: linear-gradient(135deg, #facc15, #eab308); animation: pulse 2s infinite;">
+                                <!-- Bolt Icon for fun -->
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-white" viewBox="0 0 20 20" fill="currentColor">
+                                  <path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h5a1 1 0 01.954 1.3l-9 10A1 1 0 018 18v-5H3a1 1 0 01-.954-1.3l9-10a1 1 0 01.254-.654z" clip-rule="evenodd" />
+                                </svg>
+                            </button>
+                            <span class="block mt-3 font-laila text-yellow-800 font-semibold text-lg">Shagun Wheel!</span>
+                        </div>
+
+                    </div>
+                    <!-- ******** END ADDED BACK ********* -->
+
+
+                    <!-- NEW: Floating Action Button Container -->
+                    <div class="flex justify-center items-center gap-8 p-4 mt-4">
+                        <div class="text-center">
+                            <button id="open-shagun-modal" class="fab-btn shagun-fab-btn w-16 h-16 rounded-full">
+                                <!-- Rupee Icon -->
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 8h6m-5 0a3 3 0 110 6H9l3 3m-3-6h6m6 1a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                            </button>
+                            <span class="block mt-3 font-laila text-purple-800 font-semibold text-lg">Share Shagun</span>
+                        </div>
+                        <div class="text-center">
+                            <button id="open-petpujo-modal" class="fab-btn petpujo-fab-btn w-16 h-16 rounded-full">
+                                <!-- Bag/Food Icon -->
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                                </svg>
+                            </button>
+                            <span class="block mt-3 font-laila text-teal-800 font-semibold text-lg">Pet Pujo Portal</span>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- ******** ADDED BACK ********* -->
+                <!-- Column 2: Video Call -->
+                <section id="video-column" class="lg:col-span-8">
+                    <div class="bg-white p-6 rounded-2xl shadow-xl h-full flex flex-col">
+                        <h2 class="font-laila text-3xl font-bold text-gray-800 mb-5 text-center">Virtual Celebration</h2>
+                        
+                        <!-- Webcam and Filter Container -->
+                        <div id="photoBooth" class="relative w-full aspect-video bg-gray-900 rounded-lg shadow-inner overflow-hidden mb-4">
+                            <!-- Sibling's video (main) -->
+                            <video id="sibling-video" class="w-full h-full object-cover" autoplay playsinline></video>
+                            
+                            <!-- My video (picture-in-picture) -->
+                            <video id="my-video" class="absolute bottom-4 right-4 w-1/3 max-w-[200px] aspect-video object-cover rounded-md shadow-lg border-2 border-white transform scale-x-[-1]" autoplay playsinline muted></video>
+                            
+                            <!-- Filter Overlay -->
+                            <div class="absolute inset-0 pointer-events-none border-8 border-yellow-400 border-dashed rounded-lg flex flex-col justify-between p-4">
+                                <div class="text-center">
+                                    <span class="font-laila text-xl sm:text-3xl font-bold text-white bg-red-600 px-4 py-1 rounded-lg shadow-lg" style="text-shadow: 1px 1px 2px rgba(0,0,0,0.5);">
+                                        Happy Bhai Fota!
+                                    </span>
+                                </div>
+                                
+                                <!-- Virtual Tilak -->
+                                <div class="absolute top-1/3 left-1/2 -translate-x-1/2">
+                                    <div class="w-4 h-4 sm:w-6 sm:h-6 bg-red-600 rounded-full border-2 border-yellow-200 shadow-xl"></div>
+                                    <div class="w-1 h-2 sm:w-2 sm:h-4 bg-yellow-200 rounded-b-full absolute top-full left-1/2 -translate-x-1/2" style="transform: translateX(-50%) rotate(10deg);"></div>
+                                </div>
+
+                                <div></div>
+                            </div>
+                        </div>
+
+                        <!-- Controls -->
+                        <div class="flex flex-col sm:flex-row gap-3 justify-center mb-4">
+                            <button id="takeSnapshot" class="flex-1 flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg shadow-md transition-all duration-200 hover:scale-105">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4 5a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V7a2 2 0 00-2-2h-1.586a1 1 0 01-.707-.293l-1.121-1.121A2 2 0 0011.172 3H8.828a2 2 0 00-1.414.586L6.293 4.707A1 1 0 015.586 5H4zm6 9a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd" /></svg>
+                                Take Snapshot
+                            </button>
+                            <button id="hang-up" class="flex-1 flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-4 rounded-lg shadow-md transition-all duration-200 hover:scale-105">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M16 8l2-2m0 0l2 2m-2-2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V6m0 0L4 8m2-2v12a2 2 0 002 2h8a2 2 0 002-2V6m-6 0h4" /></svg>
+                                Hang Up
+                            </button>
+                            <button id="maximize-btn" class="flex-1 flex items-center justify-center gap-2 bg-gray-600 hover:bg-gray-700 text-white font-bold py-3 px-4 rounded-lg shadow-md transition-all duration-200 hover:scale-105">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 4a1 1 0 011-1h4a1 1 0 010 2H5v3a1 1 0 11-2 0V4zm14 0a1 1 0 00-1-1h-4a1 1 0 100 2h3v3a1 1 0 102 0V4zm-1 12h-3v-3a1 1 0 10-2 0v4a1 1 0 001 1h4a1 1 0 100-2zM4 17a1 1 0 011-1h3v-3a1 1 0 112 0v4a1 1 0 01-1 1H5a1 1 0 01-1-1z" clip-rule="evenodd" /></svg>
+                                Maximize
+                            </button>
+                        </div>
+                        
+                        <!-- Snapshot Display -->
+                        <div id="snapshotArea" class="hidden text-center mt-4">
+                            <h3 class="text-xl font-semibold text-gray-700 mb-2">Your Photo!</h3>
+                            <img id="snapshotImg" class="w-full max-w-md mx-auto rounded-lg snapshot-preview p-1 snapshot-preview-img" alt="Your Bhai Fota Snapshot">
+                            <a id="downloadLink" class="mt-4 inline-block bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-6 rounded-lg shadow-md transition-all duration-200" download="bhai-fota-snapshot.png">
+                                Download Photo
+                            </a>
+                        </div>
+                    </div>
+                </section>
+                <!-- ******** END ADDED BACK ********* -->
+
+                <!-- Hidden canvas for processing the snapshot -->
+                <canvas id="hiddenCanvas" class="hidden"></canvas>
+            </div>
+        </main>
+        
+        <!-- Simple Modal for Messages -->
+        <div id="messageModal" class="hidden fixed inset-0 bg-black bg-opacity-70 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+            <div class="bg-white p-6 rounded-lg shadow-xl max-w-sm w-full text-center transform transition-all scale-95 opacity-0 animate-modal-in">
+                <p id="modalText" class="text-lg text-gray-700 mb-4"></p>
+                <button id="closeModal" class="bg-red-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-red-700 transition-all">Close</button>
+            </div>
+        </div>
+
+        <!-- NEW: Share Shagun Modal -->
+        <div id="shagun-modal" class="content-modal-backdrop hidden">
+            <div class="content-modal-box">
+                <button id="close-shagun-modal" class="modal-close-btn">&times;</button>
+                <h2 class="font-laila text-3xl font-bold text-purple-800 mb-6">Share Shagun (Gift)</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Part 1: Generate and Send -->
+                    <div class="pb-6 border-b md:border-b-0 md:border-r md:pr-6 border-purple-200 space-y-3">
+                        <h3 class="text-xl font-semibold text-gray-700 mb-3">Share Your UPI QR Code</h3>
+                        <div>
+                            <label for="upi-id" class="block text-sm font-medium text-gray-700">Your UPI ID (e.g., name@okbank)</label>
+                            <input type="text" id="upi-id" class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500">
+                        </div>
+                        <div>
+                            <label for="upi-name" class="block text-sm font-medium text-gray-700">Your Name</label>
+                            <input type="text" id="upi-name" class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500">
+                        </div>
+                        <div>
+                            <label for="upi-amount" class="block text-sm font-medium text-gray-700">Amount (Optional)</label>
+                            <input type="number" id="upi-amount" placeholder="e.g., 501" class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500">
+                        </div>
+                        <div>
+                            <label for="upi-note" class="block text-sm font-medium text-gray-700">Note (Optional)</label>
+                            <input type="text" id="upi-note" placeholder="Bhai Fota" class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-purple-500">
+                        </div>
+                        <button id="generate-qr-button" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-4 rounded-lg shadow-md transition-all duration-200 hover:scale-105">
+                            Generate & Share My QR
+                        </button>
+                    </div>
+        
+                    <!-- Part 2: Receive -->
+                    <div>
+                        <h3 id="qr-display-title" class="text-xl font-semibold text-gray-700 mb-3 text-center">Scan Sibling's QR Code</h3>
+                        <div id="sibling-qr-box" class="w-full max-w-xs mx-auto bg-gray-100 p-4 rounded-lg text-center min-h-[200px] flex items-center justify-center">
+                            <div id="sibling-qr-display-container"></div>
+                            <p id="sibling-qr-placeholder" class="text-gray-500">When your sibling shares their QR code, it will appear here for you to scan.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- NEW: Pet Pujo Modal -->
+        <div id="petpujo-modal" class="content-modal-backdrop hidden">
+            <div class="content-modal-box max-w-md">
+                <button id="close-petpujo-modal" class="modal-close-btn">&times;</button>
+                <h2 class="font-laila text-3xl font-bold text-teal-800 mb-6 text-center">Pet Pujo Portal!</h2>
+                
+                <p class="text-center text-gray-600 mb-6">Send some *real* sweets or treats instantly!</p>
+                <div class="grid grid-cols-2 gap-4">
+                    <a href="https://www.zomato.com/order" target="_blank" class="delivery-btn zomato-btn text-white font-bold py-3 px-4 rounded-lg shadow-lg text-center">
+                        Zomato
+                    </a>
+                    <a href="https://www.swiggy.com/search" target="_blank" class="delivery-btn swiggy-btn text-white font-bold py-3 px-4 rounded-lg shadow-lg text-center">
+                        Swiggy
+                    </a>
+                    <a href="https://blinkit.com/search" target="_blank" class="delivery-btn blinkit-btn text-white font-bold py-3 px-4 rounded-lg shadow-lg text-center">
+                        Blinkit
+                    </a>
+                    <a href="https://www.zeptonow.com/search" target="_blank" class="delivery-btn zepto-btn text-white font-bold py-3 px-4 rounded-lg shadow-lg text-center">
+                        Zepto
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- NEW: Game Modal -->
+        <div id="game-modal" class="content-modal-backdrop hidden">
+            <div class="content-modal-box max-w-md">
+                <button id="close-game-modal" class="modal-close-btn">&times;</button>
+                <h2 class="font-laila text-3xl font-bold text-yellow-800 mb-6 text-center">Shagun Spin Wheel!</h2>
+                
+                <p class="text-center text-gray-600 mb-4">Set the *MAX* shagun amount, then spin the wheel!</p>
+                
+                <div class="mb-4">
+                    <label for="game-max-amount" class="block text-sm font-medium text-gray-700">Max Amount (₹)</label>
+                    <input type="number" id="game-max-amount" value="1001" class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-yellow-500">
+                </div>
+
+                <!-- Wheel Container -->
+                <div class="relative w-72 h-72 mx-auto my-8">
+                    <!-- Pointer -->
+                    <div class="absolute top-[-20px] left-1/2 -translate-x-1/2 w-0 h-0 border-l-[15px] border-r-[15px] border-t-[30px] border-l-transparent border-r-transparent border-t-red-600 z-10" style="filter: drop-shadow(0 -2px 2px rgba(0,0,0,0.3));"></div>
+                    
+                    <!-- Wheel -->
+                    <div id="wheel" class="w-full h-full rounded-full transition-transform duration-[5000ms] ease-out border-4 border-yellow-300 shadow-xl" style="background: conic-gradient(#f87171 0deg 45deg, #fbbf24 45deg 90deg, #34d399 90deg 135deg, #60a5fa 135deg 180deg, #a78bfa 180deg 225deg, #f472b6 225deg 270deg, #fb923c 270deg 315deg, #a3e635 315deg 360deg);">
+                        <!-- Labels for the wheel segments -->
+                        <span class="wheel-label" style="transform: rotate(22.5deg) translate(0, -10px);">10%</span>
+                        <span class="wheel-label" style="transform: rotate(67.5deg) translate(0, -10px);">25%</span>
+                        <span class="wheel-label" style="transform: rotate(112.5deg) translate(0, -10px);">50%</span>
+                        <span class="wheel-label" style="transform: rotate(157.5deg) translate(0, -10px);">75%</span>
+                        <span class="wheel-label" style="transform: rotate(202.5deg) translate(0, -10px);">JACKPOT!</span>
+                        <span class="wheel-label" style="transform: rotate(247.5deg) translate(0, -10px);">Try Again</span>
+                        <span class="wheel-label" style="transform: rotate(292.5deg) translate(0, -10px);">₹501</span>
+                        <span class="wheel-label" style="transform: rotate(337.5deg) translate(0, -10px);">Bhai's Choice</span>
+                    </div>
+                </div>
+
+                <button id="spin-wheel-btn" class="w-full bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-3 px-4 rounded-lg shadow-md transition-all duration-200 hover:scale-105">
+                    Spin the Wheel!
+                </button>
+                
+                <p id="wheel-result" class="text-center text-2xl font-bold text-gray-800 mt-6 h-8"></p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Hidden textarea for clipboard copy -->
+    <textarea id="copy-helper" style="position: absolute; left: -9999px;"></textarea>
+
+    <script>
+        // 6. JavaScript Logic
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // --- Global Variables ---
+            let peer = null;
+            let myStream = null;
+            let currentCall = null;
+            let myPeerId = null;
+            let dataConnection = null; // For data channel (QR codes)
+            let myRole = null; // 'didi' or 'bhai'
+
+            // --- Element Selectors ---
+            // Role selection
+            const roleSelection = document.getElementById('role-selection');
+            const mainContent = document.getElementById('main-content');
+            const didiButton = document.getElementById('didi-button');
+            const bhaiButton = document.getElementById('bhai-button');
+            const didiUI = document.getElementById('didi-ui');
+            const bhaiUI = document.getElementById('bhai-ui');
+
+            // Call setup
+            const myIdSpan = document.getElementById('my-id');
+            const copyIdButton = document.getElementById('copy-id');
+            const whatsappShareButton = document.getElementById('whatsapp-share');
+            const siblingIdInput = document.getElementById('sibling-id');
+            const callButton = document.getElementById('call-button');
+            
+            // Video & Snapshot
+            const myVideo = document.getElementById('my-video');
+            const siblingVideo = document.getElementById('sibling-video');
+            const takeSnapshotButton = document.getElementById('takeSnapshot');
+            const hangUpButton = document.getElementById('hang-up');
+            const maximizeBtn = document.getElementById('maximize-btn'); // NEW
+            const controlColumn = document.getElementById('control-column'); // NEW
+            const videoColumn = document.getElementById('video-column'); // NEW
+            
+            const snapshotArea = document.getElementById('snapshotArea');
+            const snapshotImg = document.getElementById('snapshotImg');
+            const downloadLink = document.getElementById('downloadLink');
+            const hiddenCanvas = document.getElementById('hiddenCanvas');
+            
+            // Modal
+            const modal = document.getElementById('messageModal');
+            const modalText = document.getElementById('modalText');
+            const closeModalButton = document.getElementById('closeModal');
+            const copyHelper = document.getElementById('copy-helper');
+
+            // NEW: Shagun (QR Code) selectors
+            const generateQrButton = document.getElementById('generate-qr-button');
+            const upiIdInput = document.getElementById('upi-id');
+            const upiNameInput = document.getElementById('upi-name');
+            const upiAmountInput = document.getElementById('upi-amount');
+            const upiNoteInput = document.getElementById('upi-note');
+            
+            const siblingQrBox = document.getElementById('sibling-qr-box');
+            const siblingQrDisplayContainer = document.getElementById('sibling-qr-display-container');
+            const siblingQrPlaceholder = document.getElementById('sibling-qr-placeholder');
+            const qrDisplayTitle = document.getElementById('qr-display-title'); // NEW: Select the title
+            
+            // NEW: Content Modal Selectors
+            const shagunModal = document.getElementById('shagun-modal');
+            const openShagunModalBtn = document.getElementById('open-shagun-modal');
+            const closeShagunModalBtn = document.getElementById('close-shagun-modal');
+            
+            const petpujoModal = document.getElementById('petpujo-modal');
+            const openPetpujoModalBtn = document.getElementById('open-petpujo-modal');
+            const closePetpujoModalBtn = document.getElementById('close-petpujo-modal');
+
+            // NEW: Game Modal Selectors
+            const openGameModalBtn = document.getElementById('open-game-modal');
+            const gameModal = document.getElementById('game-modal');
+            const closeGameModalBtn = document.getElementById('close-game-modal');
+            const spinWheelBtn = document.getElementById('spin-wheel-btn');
+            const wheel = document.getElementById('wheel');
+            const gameMaxAmountInput = document.getElementById('game-max-amount');
+            const wheelResult = document.getElementById('wheel-result');
+            let isSpinning = false;
+            let currentWheelRotation = 0;
+
+
+            // --- Modal Functions ---
+            function showModal(message) {
+                modalText.textContent = message;
+                modal.classList.remove('hidden');
+                // Animate modal in
+                setTimeout(() => {
+                    modal.querySelector('div').classList.remove('scale-95', 'opacity-0');
+                    modal.querySelector('div').classList.add('scale-100', 'opacity-100');
+                }, 10);
+            }
+            closeModalButton.addEventListener('click', () => {
+                modal.querySelector('div').classList.add('scale-95', 'opacity-0');
+                modal.querySelector('div').classList.remove('scale-100', 'opacity-100');
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                }, 200);
+            });
+
+            // NEW: Content Modal Functions
+            function openContentModal(modalEl) {
+                modalEl.classList.remove('hidden');
+                setTimeout(() => {
+                    modalEl.querySelector('.content-modal-box').classList.remove('scale-95', 'opacity-0');
+                    modalEl.querySelector('.content-modal-box').classList.add('scale-100', 'opacity-100');
+                }, 10);
+            }
+
+            function closeContentModal(modalEl) {
+                modalEl.querySelector('.content-modal-box').classList.add('scale-95', 'opacity-0');
+                modalEl.querySelector('.content-modal-box').classList.remove('scale-100', 'opacity-100');
+                setTimeout(() => {
+                    modalEl.classList.add('hidden');
+                }, 200);
+            }
+
+            // --- Role Selection Logic ---
+            didiButton.addEventListener('click', () => {
+                myRole = 'didi';
+                setupPageForRole();
+            });
+
+            bhaiButton.addEventListener('click', () => {
+                myRole = 'bhai';
+                setupPageForRole();
+            });
+
+            function setupPageForRole() {
+                roleSelection.classList.add('hidden');
+                mainContent.classList.remove('hidden');
+                
+                if (myRole === 'didi') {
+                    didiUI.classList.remove('hidden');
+                    bhaiUI.classList.add('hidden');
+                } else {
+                    bhaiUI.classList.remove('hidden');
+                    didiUI.classList.add('hidden');
+                }
+                
+                // Initialize media and PeerJS
+                startMedia();
+                startPeerJS();
+            }
+
+            // --- WebRTC Initialization ---
+            
+            // 1. Start getting user media (camera/mic)
+            async function startMedia() {
+                try {
+                    myStream = await navigator.mediaDevices.getUserMedia({ 
+                        video: true, 
+                        audio: true 
+                    });
+                    myVideo.srcObject = myStream;
+                } catch (err) {
+                    console.error('Error accessing media devices:', err);
+                    showModal('Could not access your camera/microphone. Please check browser permissions and refresh.');
+                }
+            }
+
+            // 2. Initialize PeerJS connection
+            function startPeerJS() {
+                // ******** FIXED BUG *********
+                // Initialize PeerJS without an ID. Server will assign one.
+                peer = new Peer(undefined, {});
+
+                // Event: When connection to PeerJS server is open
+                peer.on('open', (id) => {
+                    myPeerId = id;
+                    if (myRole === 'didi') {
+                        myIdSpan.textContent = id;
+                    }
+                });
+
+                // Event: When receiving an incoming call (media)
+                peer.on('call', (call) => {
+                    if (!myStream) {
+                        setTimeout(() => peer.on('call', call), 1000);
+                        return;
+                    }
+                    if(myRole === 'bhai') {
+                        showModal('Call from Didi! Answering...');
+                    } else {
+                        showModal('Call from Bhai! Answering...');
+                    }
+                    call.answer(myStream);
+                    setupCallEvents(call);
+                });
+
+                // Event: When receiving an incoming data connection
+                peer.on('connection', (conn) => {
+                    showModal('Data connection established. You can now share QR codes.');
+                    setupDataConnection(conn);
+                });
+
+                peer.on('error', (err) => {
+                    console.error('PeerJS Error:', err);
+                    showModal(`A connection error occurred: ${err.message}. Please refresh.`);
+                });
+            }
+
+            // 3. Set up listeners for an active media call
+            function setupCallEvents(call) {
+                if (currentCall) {
+                    currentCall.close();
+                }
+                currentCall = call;
+
+                call.on('stream', (remoteStream) => {
+                    siblingVideo.srcObject = remoteStream;
+                    siblingVideo.play();
+                });
+
+                call.on('close', () => {
+                    showModal('Call ended.');
+                    siblingVideo.srcObject = null;
+                    currentCall = null;
+                });
+            }
+
+            // 4. Set up listeners for an active data connection
+            function setupDataConnection(conn) {
+                if (dataConnection) {
+                    dataConnection.close();
+                }
+                dataConnection = conn;
+
+                conn.on('data', (data) => {
+                    // Check if data is a QR code string
+                    if (data && typeof data === 'string' && data.startsWith('upi://')) {
+                        // Generate QR code from the UPI string
+                        try {
+                            const typeNumber = 0; // Auto-detect
+                            const errorCorrectionLevel = 'L';
+                            const qr = qrcode(typeNumber, errorCorrectionLevel);
+                            qr.addData(data);
+                            qr.make();
+                            
+                            siblingQrDisplayContainer.innerHTML = qr.createImgTag(6, 8); // (cellSize, margin)
+                            siblingQrDisplayContainer.firstChild.className = "w-full h-full object-contain rounded-lg";
+                            
+                            qrDisplayTitle.textContent = "Sibling's QR Code (Scan to Pay)"; // NEW: Update title
+                            siblingQrPlaceholder.classList.add('hidden');
+                            showModal('QR Code Received! You can now scan it.');
+                        } catch (e) {
+                            console.error("Error generating received QR code:", e);
+                            showModal("Received a QR code, but couldn't display it.");
+                        }
+                    }
+                });
+
+                conn.on('close', () => {
+                    showModal('Data connection closed.');
+                    dataConnection = null;
+                    // Reset QR display
+                    siblingQrDisplayContainer.innerHTML = '';
+                    qrDisplayTitle.textContent = "Scan Sibling's QR Code"; // NEW: Reset title
+                    siblingQrPlaceholder.classList.remove('hidden');
+                });
+
+                conn.on('error', (err) => {
+                    console.error('Data Connection Error:', err);
+Signature: 
+                    showModal('A data connection error occurred.');
+                });
+            }
+
+            // --- Button Event Listeners ---
+
+            // "Copy" button
+            copyIdButton.addEventListener('click', () => {
+                if (!myPeerId) return;
+                copyHelper.value = myPeerId;
+                copyHelper.select();
+                try {
+                    document.execCommand('copy');
+                    showModal('Your Call ID has been copied to the clipboard!');
+                } catch (err) {
+                    showModal('Could not copy ID. Please copy it manually.');
+                }
+                copyHelper.blur();
+            });
+            
+            // NEW: Content Modal Listeners
+            openShagunModalBtn.addEventListener('click', () => openContentModal(shagunModal));
+            closeShagunModalBtn.addEventListener('click', () => closeContentModal(shagunModal));
+            
+            openPetpujoModalBtn.addEventListener('click', () => openContentModal(petpujoModal));
+            closePetpujoModalBtn.addEventListener('click', () => closeContentModal(petpujoModal));
+            
+            // Close modals if backdrop is clicked
+            shagunModal.addEventListener('click', (e) => {
+                if (e.target === shagunModal) closeContentModal(shagunModal);
+            });
+            petpujoModal.addEventListener('click', (e) => {
+                if (e.target === petpujoModal) closeContentModal(petpujoModal);
+            });
+
+            // NEW: Game Modal Listeners
+            if (openGameModalBtn) {
+                openGameModalBtn.addEventListener('click', () => openContentModal(gameModal));
+                closeGameModalBtn.addEventListener('click', () => closeContentModal(gameModal));
+                gameModal.addEventListener('click', (e) => {
+                    if (e.target === gameModal) closeContentModal(gameModal);
+                });
+            }
+
+
+            // NEW: Maximize Button Logic
+            maximizeBtn.addEventListener('click', () => {
+                if (mainContent.classList.contains('maximized')) {
+                    // Minimize
+                    controlColumn.classList.remove('hidden');
+                    videoColumn.classList.remove('lg:col-span-12');
+                    videoColumn.classList.add('lg:col-span-8');
+                    maximizeBtn.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 4a1 1 0 011-1h4a1 1 0 010 2H5v3a1 1 0 11-2 0V4zm14 0a1 1 0 00-1-1h-4a1 1 0 100 2h3v3a1 1 0 102 0V4zm-1 12h-3v-3a1 1 0 10-2 0v4a1 1 0 001 1h4a1 1 0 100-2zM4 17a1 1 0 011-1h3v-3a1 1 0 112 0v4a1 1 0 01-1 1H5a1 1 0 01-1-1z" clip-rule="evenodd" /></svg>
+                        Maximize`;
+                    mainContent.classList.remove('maximized');
+                } else {
+                    // Maximize
+                    controlColumn.classList.add('hidden');
+                    videoColumn.classList.remove('lg:col-span-8');
+                    videoColumn.classList.add('lg:col-span-12');
+                    maximizeBtn.innerHTML = `
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5 3a1 1 0 00-1 1v4a1 1 0 102 0V5h3a1 1 0 100-2H5zM15 3a1 1 0 011 1v4a1 1 0 11-2 0V5h-3a1 1 0 110-2h4zM5 17a1 1 0 011-1h3v-3a1 1 0 112 0v4a1 1 0 01-1 1H5a1 1 0 01-1-1zm10 0a1 1 0 001-1v-4a1 1 0 10-2 0v3h-3a1 1 0 100 2h4z" clip-rule="evenodd" /></svg>
+                        Minimize`;
+                    mainContent.classList.add('maximized');
+                }
+            });
+
+            // "Share on WhatsApp" button
+            whatsappShareButton.addEventListener('click', () => {
+                if (!myPeerId) {
+                    showModal('Still connecting... please wait a moment.');
+                    return;
+                }
+                const pageUrl = window.location.href;
+                const message = `Hi Bhai! Here is my call ID for our Bhai Fota celebration: ${myPeerId}\n\nClick this link to join the call: ${pageUrl}`;
+                const encodedMessage = encodeURIComponent(message);
+                const whatsappUrl = `https://wa.me/?text=${encodedMessage}`;
+                window.open(whatsappUrl, '_blank');
+            });
+
+            // "Call" button (for Bhai)
+            callButton.addEventListener('click', () => {
+                const siblingId = siblingIdInput.value;
+                if (!siblingId) {
+                    showModal('Please enter your Didi\'s Call ID.');
+                    return;
+                }
+                if (!myStream || !peer) {
+                    showModal('Not ready. Please wait for camera and connection.');
+                    return;
+                }
+
+                showModal(`Calling ${siblingId}...`);
+                
+                // Start the data connection
+                const conn = peer.connect(siblingId);
+                setupDataConnection(conn);
+
+                // Start the media call
+                const call = peer.call(siblingId, myStream);
+                setupCallEvents(call);
+            });
+
+            // "Hang Up" button
+            hangUpButton.addEventListener('click', () => {
+                if (currentCall) {
+                    currentCall.close();
+                }
+            });
+            
+            // "Generate & Share QR" button
+            generateQrButton.addEventListener('click', () => {
+                const upiId = upiIdInput.value;
+                const upiName = upiNameInput.value;
+                const upiAmount = upiAmountInput.value;
+                const upiNote = upiNoteInput.value || 'Bhai Fota';
+                
+                if (!upiId || !upiName) {
+                    showModal('Please enter at least your UPI ID and Name.');
+                    return;
+                }
+
+                // Construct the UPI string
+                // upi://pay?pa=UPI-ID&pn=PAYEE-NAME&am=AMOUNT&cu=CURRENCY&tn=TRANSACTION-NOTE
+                let upiString = `upi://pay?pa=${encodeURIComponent(upiId)}&pn=${encodeURIComponent(upiName)}&tn=${encodeURIComponent(upiNote)}&cu=INR`;
+                if (upiAmount) {
+                    upiString += `&am=${encodeURIComponent(upiAmount)}`;
+                }
+
+                // --- NEW: Generate and display QR locally ---
+                try {
+                    const typeNumber = 0; // Auto-detect
+                    const errorCorrectionLevel = 'L';
+                    const qr = qrcode(typeNumber, errorCorrectionLevel);
+                    qr.addData(upiString);
+                    qr.make();
+                    
+                    siblingQrDisplayContainer.innerHTML = qr.createImgTag(6, 8); // (cellSize, margin)
+                    siblingQrDisplayContainer.firstChild.className = "w-full h-full object-contain rounded-lg";
+                    
+                    qrDisplayTitle.textContent = "Your Generated QR Code"; // NEW: Update title
+                    siblingQrPlaceholder.classList.add('hidden'); // NEW: Hide placeholder
+                } catch (e) {
+                    console.error("Error generating local QR code:", e);
+                    showModal("Could not generate your QR code. Please check details.");
+                    return; // Don't send if it fails to generate
+                }
+                // --- End NEW ---
+
+                // Check connection *after* generating, so user gets feedback even if not connected
+                if (!dataConnection || !dataConnection.open) {
+                    showModal('QR Generated, but you are not in a call to share it. Call your sibling!');
+                    return;
+                }
+                
+                // Send the raw UPI string
+                try {
+                    dataConnection.send(upiString);
+                    showModal('Your QR code has been generated and sent!'); // Updated message
+                } catch (e) {
+                    console.error("Error sending data:", e);
+                    showModal("QR Generated, but could not send it. Connection may be lost.");
+                }
+            });
+
+            // NEW: Spin Wheel Logic
+            if (spinWheelBtn) {
+                const segments = [
+                    { label: "10%", value: 0.1 },
+                    { label: "25%", value: 0.25 },
+                    { label: "50%", value: 0.5 },
+                    { label: "75%", value: 0.75 },
+                    { label: "JACKPOT!", value: 1.0 },
+                    { label: "Try Again", value: 0 },
+                    { label: "₹501", value: 501 },
+                    { label: "Bhai's Choice", value: -1 } // -1 is a special code
+                ];
+                const segmentAngle = 45; // 360 / 8 segments
+
+                spinWheelBtn.addEventListener('click', () => {
+                    if (isSpinning) return;
+                    isSpinning = true;
+                    wheelResult.textContent = 'Spinning...';
+
+                    // 1. Pick a random segment to win
+                    const segmentIndex = Math.floor(Math.random() * segments.length);
+                    const winningSegment = segments[segmentIndex];
+
+                    // 2. Calculate rotation
+                    // Base spins (at least 5)
+                    const baseSpins = 5 * 360;
+                    // Target angle in the middle of the winning segment
+                    // We spin *backwards* (negative) so the segment lands at the top pointer
+                    const targetStopAngle = -((segmentIndex * segmentAngle) + (segmentAngle / 2));
+                    // Add a random jitter so it doesn't stop at the *exact* same place
+                    const randomJitter = (Math.random() * 40) - 20; // +/- 20 degrees
+                    
+                    // Add to the current rotation to make it spin continuously
+                    currentWheelRotation += baseSpins + targetStopAngle + randomJitter;
+                    
+                    wheel.style.transform = `rotate(${currentWheelRotation}deg)`;
+
+                    // 3. Calculate result after spin (5000ms animation + 100ms buffer)
+                    setTimeout(() => {
+                        isSpinning = false;
+                        let maxAmount = parseFloat(gameMaxAmountInput.value) || 1001;
+                        if (maxAmount <= 0) maxAmount = 1001;
+
+                        let resultText = "";
+                        const val = winningSegment.value;
+                        
+                        if (val === -1) {
+                            resultText = "Bhai's Choice! You pick!";
+                        } else if (val === 0) {
+                            resultText = "Try Again! (₹0)";
+                        } else if (val === 501) {
+                            resultText = "Shagun! You pay ₹501!";
+                        } else if (val === 1.0) {
+                            resultText = `JACKPOT! You pay ₹${Math.round(maxAmount)}!`;
+                        } else {
+                            // It's a percentage
+                            const prize = Math.round(maxAmount * val);
+                            resultText = `You pay ${winningSegment.label} (₹${prize})!`;
+                        }
+                        
+                        wheelResult.textContent = resultText;
+                        // Also show in the main alert modal
+                        showModal(`The wheel landed on: ${resultText}`);
+
+                    }, 5100); 
+                });
+            }
+
+            // "Take Snapshot" button
+            takeSnapshotButton.addEventListener('click', () => {
+                if (!currentCall && !myStream) {
+                    showModal('Please start your camera first!');
+                    return;
+                }
+
+                const context = hiddenCanvas.getContext('2d');
+                
+                // Use sibling's video if available, otherwise use own video
+                const mainVideo = (currentCall && siblingVideo.srcObject) ? siblingVideo : myVideo;
+                const isUsingMyVideoAsMain = mainVideo === myVideo;
+
+                const videoWidth = mainVideo.videoWidth;
+                const videoHeight = mainVideo.videoHeight;
+
+                if (videoWidth === 0 || videoHeight === 0) {
+                    showModal('Video is not ready. Please try again in a moment.');
+                    return;
+                }
+
+                hiddenCanvas.width = videoWidth;
+                hiddenCanvas.height = videoHeight;
+                
+                // Flip main video if it's my own (selfie view)
+                if (isUsingMyVideoAsMain) {
+                    context.save();
+                    context.scale(-1, 1);
+                    context.drawImage(mainVideo, -videoWidth, 0, videoWidth, videoHeight);
+                    context.restore();
+                } else {
+                    context.drawImage(mainVideo, 0, 0, videoWidth, videoHeight);
+                }
+
+                // Add PiP (only if in a call)
+                if (currentCall && siblingVideo.srcObject) {
+                    const pipWidth = videoWidth * 0.25;
+                    const pipHeight = myVideo.videoHeight * (pipWidth / myVideo.videoWidth);
+                    const pipX = videoWidth * 0.98 - pipWidth;
+                    const pipY = videoHeight * 0.98 - pipHeight;
+                    
+                    context.save();
+                    context.strokeStyle = 'white';
+                    context.lineWidth = 4;
+                    // Flip my video in the PiP
+                    context.scale(-1, 1);
+                    context.drawImage(myVideo, -pipX - pipWidth, pipY, pipWidth, pipHeight);
+                    context.restore();
+                    // Draw border after restoring
+                    context.strokeRect(pipX, pipY, pipWidth, pipHeight);
+                }
+
+                // --- Add Filter Overlay to Canvas ---
+                const borderWidth = videoWidth * 0.02; // Thinner border
+                context.strokeStyle = '#FDE047';
+                context.lineWidth = borderWidth;
+                context.setLineDash([borderWidth * 2, borderWidth]);
+                context.strokeRect(borderWidth / 2, borderWidth / 2, videoWidth - borderWidth, videoHeight - borderWidth);
+                context.setLineDash([]);
+
+                const fontSize = videoHeight * 0.1;
+                context.font = `bold ${fontSize}px 'Laila', sans-serif`;
+                context.fillStyle = '#DC2626';
+                context.textAlign = 'center';
+                context.textBaseline = 'top';
+                context.shadowColor = 'rgba(0,0,0,0.5)';
+                context.shadowBlur = 5;
+                context.shadowOffsetX = 2;
+                context.shadowOffsetY = 2;
+                context.fillText('Happy Bhai Fota!', videoWidth / 2, videoHeight * 0.05);
+                context.shadowColor = 'transparent';
+
+                const tilakRadius = videoWidth * 0.03;
+                const tilakX = videoWidth / 2;
+                const tilakY = videoHeight * 0.35;
+                
+                context.fillStyle = '#DC2626';
+                context.beginPath();
+                context.arc(tilakX, tilakY, tilakRadius, 0, 2 * Math.PI);
+                context.fill();
+                
+                context.strokeStyle = '#FEF08A';
+                context.lineWidth = tilakRadius * 0.2;
+                context.stroke();
+                // --- End Filter Overlay ---
+
+                const dataUrl = hiddenCanvas.toDataURL('image/png');
+                
+                snapshotImg.src = dataUrl;
+                downloadLink.href = dataUrl;
+                snapshotArea.classList.remove('hidden');
+                snapshotArea.scrollIntoView({ behavior: 'smooth' });
+            });
+            
+            // Add custom animation styles for modal
+            const styleSheet = document.createElement("style");
+            styleSheet.type = "text/css";
+            styleSheet.innerText = `
+                @keyframes modal-in {
+                    from { transform: scale(0.95); opacity: 0; }
+                    to { transform: scale(1); opacity: 1; }
+                }
+                .animate-modal-in {
+                    animation: modal-in 0.2s ease-out forwards;
+                }
+            `;
+            document.head.appendChild(styleSheet);
+        });
+    </script>
+</body>
+</html>
+
+
